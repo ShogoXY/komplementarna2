@@ -20,9 +20,8 @@ df_kom = pd.read_excel(path_excel_kom)
 df = pd.DataFrame(df)
 df_kom = pd.DataFrame(df_kom)
 
-global df2, df_kom2, df_kom_all
+global df2, df_kom2, df_kom_all, niema
 global kat_g
-
 Window.softinput_mode="below_target"
 
 
@@ -30,36 +29,29 @@ Builder.load_file('my.kv')
 
 
 def wybrana_lista(szukaj):
+    show = P()
+
     szukaj2 = szukaj.split()
     if szukaj == "":
         print("KONIEC")
-
+    global df2
     df2 = df
     for i in range(len(szukaj2)):
 
         df2 = df2[df2["NAZWA"].str.contains(szukaj2[i], flags=re.IGNORECASE, regex=True)]
         if df2.empty:
-            theapp.secscreen.ids.ti_komplementarna.text = ""
-            Popup(size_hint=(None, None), size=(500, 600), title="BŁĄD", auto_dismiss=True,
-                  content=show).open()
+            print("Nie ma takiego produktu")
+            # Popup(size_hint=(None, None), size=(500, 600), title="BŁĄD", auto_dismiss=True, content=show).open()
+            # theapp.screenm.current = 'first'
 
     if df2.empty:
-        theapp.secscreen.ids.ti_komplementarna.text = ""
-        Popup(size_hint=(None, None), size=(500, 600), title="BŁĄD", auto_dismiss=True,
-              content=show).open()
+        print("")
     else:
         df4 = df2["NAZWA"].unique()
         df5 = pd.DataFrame(df4)
-        # print(df5.to_string(index=False, header=False))
-
+        theapp.secscreen.ids.lb_wynik_glowny.text = (df5.to_string(index=False, header=False))
+        global kat_g
         kat_g = df2["KATEGORIA"].iloc[0]
-        # theapp.secscreen.ids.lb_wynik_glowny.text = str('\n\n'.join(map(str, newlist)))
-        theapp.secscreen.ids.lb_wynik_glowny.text = df5.to_string(index=False, header=False)
-        print("\n")
-
-        #except:
-        print("Brak, podaj podaj poprawną wartość")
-    print("KONIEC")
 
 
 
@@ -95,17 +87,27 @@ class P(FloatLayout):
 
 
 class fscreen(Widget):
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
 
     def change(self):
         show=P()
-        wybrana_lista(theapp.fscreen.ids.in_first.text)
-        theapp.screenm.current = 'second'
-        if theapp.fscreen.ids.in_first.text == "":
-            theapp.screenm.current = 'first'
-        theapp.fscreen.ids.in_first.text = ""
+        if True:
+            try:
+                wybrana_lista(theapp.fscreen.ids.in_first.text)
+                if theapp.fscreen.ids.in_first.text == "":
+                    Popup(size_hint=(None, None), size=(500, 600), title="BŁĄD", auto_dismiss=True,
+                          content=show).open()
+                else:
+                    wybrana_lista(theapp.fscreen.ids.in_first.text)
+                    theapp.screenm.current = 'second'
+                theapp.fscreen.ids.in_first.text = ""
+            except:
+                theapp.fscreen.ids.in_first.text = ""
+                Popup(size_hint=(None, None), size=(500, 600), title="BŁĄD", auto_dismiss=True,
+                      content=show).open()
 
 
     
