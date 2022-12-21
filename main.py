@@ -34,15 +34,17 @@ def wybrana_lista(szukaj):
     szukaj2 = szukaj.split()
     if szukaj == "":
         print("KONIEC")
+        Popup(size_hint=(None, None), size=(500, 600), title="BŁĄD", auto_dismiss=True, content=show).open()
+        theapp.screenm.current = 'first'
     global df2
     df2 = df
     for i in range(len(szukaj2)):
 
         df2 = df2[df2["NAZWA"].str.contains(szukaj2[i], flags=re.IGNORECASE, regex=True)]
         if df2.empty:
-            print("Nie ma takiego produktu")
-            # Popup(size_hint=(None, None), size=(500, 600), title="BŁĄD", auto_dismiss=True, content=show).open()
-            # theapp.screenm.current = 'first'
+            # print("Nie ma takiego produktu glowna")
+            Popup(size_hint=(None, None), size=(500, 600), title="BŁĄD", auto_dismiss=True, content=show).open()
+            theapp.screenm.current = 'first'
 
     if df2.empty:
         print("")
@@ -52,6 +54,7 @@ def wybrana_lista(szukaj):
         theapp.secscreen.ids.lb_wynik_glowny.text = (df5.to_string(index=False, header=False))
         global kat_g
         kat_g = df2["KATEGORIA"].iloc[0]
+        theapp.screenm.current = 'second'
 
 
 
@@ -94,20 +97,13 @@ class fscreen(Widget):
 
     def change(self):
         show=P()
-        if True:
-            try:
-                wybrana_lista(theapp.fscreen.ids.in_first.text)
-                if theapp.fscreen.ids.in_first.text == "":
-                    Popup(size_hint=(None, None), size=(500, 600), title="BŁĄD", auto_dismiss=True,
-                          content=show).open()
-                else:
-                    wybrana_lista(theapp.fscreen.ids.in_first.text)
-                    theapp.screenm.current = 'second'
-                theapp.fscreen.ids.in_first.text = ""
-            except:
-                theapp.fscreen.ids.in_first.text = ""
-                Popup(size_hint=(None, None), size=(500, 600), title="BŁĄD", auto_dismiss=True,
-                      content=show).open()
+
+        if theapp.fscreen.ids.in_first.text == "":
+            Popup(size_hint=(None, None), size=(500, 600), title="BŁĄD", auto_dismiss=True,
+                  content=show).open()
+        else:
+            wybrana_lista(theapp.fscreen.ids.in_first.text)
+        theapp.fscreen.ids.in_first.text = ""
 
 
     
@@ -122,25 +118,22 @@ class secscreen(Widget):
 
     def change(self):
         theapp.screenm.current = 'first'
+        theapp.secscreen.ids.lb_wynik_glowny.text=""
+        theapp.fscreen.ids.in_first.focus="True"
 
     def change_color(self):
         # theapp.stop()
         show=P()
-        if True:
 
-            try:
-                wynik_komplemanatrny(theapp.secscreen.ids.ti_komplementarna.text)
-                if theapp.secscreen.ids.ti_komplementarna.text == "":
-                    Popup(size_hint=(None,None), size=(500,600), title="BŁĄD", auto_dismiss=True, content=show).open()
-                    theapp.secscreen.ids.ti_komplementarna.text = "nie ma"
-                    # theapp.screenm.current = 'second'
-                theapp.secscreen.ids.ti_komplementarna.text = ""
+        if theapp.secscreen.ids.ti_komplementarna.text == "":
+            Popup(size_hint=(None, None), size=(500, 600), title="BŁĄD", auto_dismiss=True,
+                  content=show).open()
+        else:
+            wynik_komplemanatrny(theapp.secscreen.ids.ti_komplementarna.text)
+        theapp.secscreen.ids.ti_komplementarna.text = ""
 
-            except:
-                theapp.secscreen.ids.ti_komplementarna.text = ""
-                Popup(size_hint=(None, None), size=(500, 600), title="BŁĄD", auto_dismiss=True,
-                      content=show).open()
-                # theapp.screenm.current = 'first'
+
+
     def exit(self):
         theapp.stop()
 
