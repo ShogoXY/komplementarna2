@@ -2,6 +2,7 @@
 import re
 
 import pandas as pd
+import numpy as np
 
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_colwidth', None)
@@ -34,11 +35,17 @@ def glowna(szukaj):
     if df2.empty:
         print("")
     else:
-        df4 = df2["NAZWA"].unique()
+        df4 = df2["KATEGORIA"].unique()
         df5 = pd.DataFrame(df4)
-        print(df5.to_string(index=False, header=False))
-        global kat_g
-        kat_g = df2["KATEGORIA"].iloc[0]
+        # print(df5.to_string(index=False, header=False))
+        print(len(df5))
+        if len(df5) ==1:
+
+            global kat_g
+            kat_g = df2["KATEGORIA"].iloc[0]
+        else:
+            print("podaj wartość jeszcze raz")
+
 
 
 def komplementarna(szukaj_kom):
@@ -71,9 +78,10 @@ def kategoria_all():
     df_kom_all = (df_kom[df_kom["KATEGORIA"].str.contains(str(kat_g))])
     df_kom3 = df_kom_all["NAZWA"].unique()
     df_kom3 = pd.DataFrame(df_kom3)
-    print(df_kom3.to_string(index=False, header=False))
-
+    return df_kom3.to_string(index=False, header=False)
 
 glowna(str(input("podaj wartośc \n")))
-# kategoria_all()
+
+
+# print(kategoria_all())
 komplementarna(str(input("podaj komplemntarna \n")))
