@@ -8,6 +8,8 @@ from kivymd.uix.datatables import MDDataTable
 from kivy.uix.textinput import TextInput
 from kivy.uix.label import Label
 from kivy.metrics import dp
+from kivy.uix.button import Button
+
 
 
 path_excel = "glowna.xlsx"
@@ -34,22 +36,43 @@ def get_data_table2(dataframe):
 
 class MyApp(MDApp):
     def build(self):
-        layout = GridLayout(
+        layout = BoxLayout(
+            orientation="vertical"
+        )
+
+        anchor_layout_top = AnchorLayout(
+            size_hint=(1, 0.2),
+            anchor_x="center",
+            anchor_y="top",
+        )
+        anchor_layout_bottom = AnchorLayout(
+
+            size_hint=(1, 0.5),
+            anchor_x = "center",
+            anchor_y = "bottom",
+        )
+        grid_layout_bottom = GridLayout(
 
             cols= 2,
             rows=2
         )
-        layout2 = BoxLayout(
-            orientation='vertical'
+        grid_layout_top = GridLayout(
+
+            cols=2,
+            # rows=2
+        )
+        box_layout_l = BoxLayout(
+            orientation='vertical',
+            padding= [50, 50, 50, 50],
+
+        )
+        box_layout_p = BoxLayout(
+            orientation='vertical',
+            padding= [50, 50, 50, 50],
         )
 
-        layout3 = BoxLayout(
-            orientation='vertical'
-        )
 
 
-        # container = my_root.ids.container
-        # print(container)
         column_data, row_data = get_data_table(df)
         column_data = [(x, dp(100)) for x in column_data]
 
@@ -60,19 +83,20 @@ class MyApp(MDApp):
             text='Szukaj głowne',
             color='000000',
             font_size= 34,
-            # pos_hint={'right':1, 'top':1},
+
             )
 
         k_label = Label(
             text='Szukaj komplementarne',
             color='000000',
             font_size=34,
-            # pos_hint={'left':1, 'top':1},
+
+
         )
 
         table = MDDataTable(
             # pos_hint = {'right':1,'bottom':1},
-            size_hint = (0.9, 0.8),
+            size = (0.9, 0.8),
             check = True,
             column_data=column_data,
             row_data=row_data,
@@ -85,7 +109,7 @@ class MyApp(MDApp):
         table2 = MDDataTable(
             # pos_hint={'left':1, 'bottom':1},
             check=True,
-            size_hint=(0.9, 0.8),
+            size=(0.9, 0.8),
 
             column_data=column_data2,
             row_data=row_data2,
@@ -93,14 +117,45 @@ class MyApp(MDApp):
             rows_num=100
         )
 
-        layout.add_widget(layout2)
-        layout.add_widget(layout3)
-        layout2.add_widget(g_label)
-        layout2.add_widget(k_label)
-        layout.add_widget(table)
-        layout.add_widget(table2)
+
+        input_glowny=TextInput(
+            multiline=False,
+            size_hint = (1, 0.3),
+
+        )
+        input_komplementerny=TextInput(
+            multiline=False,
+            size_hint = (1, 0.3),
+
+        )
+
+
+        button_szukaj=Button(
+            text="SZUKAJ"
+        )
+        button_sprawdz=Button(
+            text="SPRAWDŹ"
+        )
+
+
+
+        layout.add_widget(anchor_layout_top)
+        layout.add_widget(anchor_layout_bottom)
+        anchor_layout_bottom.add_widget(grid_layout_bottom)
+        anchor_layout_top.add_widget(grid_layout_top)
+        grid_layout_top.add_widget(box_layout_l)
+        grid_layout_top.add_widget(box_layout_p)
+        box_layout_l.add_widget(button_szukaj)
+        box_layout_l.add_widget(g_label)
+        box_layout_l.add_widget(input_glowny)
+        box_layout_p.add_widget(button_sprawdz)
+        box_layout_p.add_widget(k_label)
+        box_layout_p.add_widget(input_komplementerny)
+        grid_layout_bottom.add_widget(table)
+        grid_layout_bottom.add_widget(table2)
 
         return layout
+
 
 
 MyApp().run()
